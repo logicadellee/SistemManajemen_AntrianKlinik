@@ -7,10 +7,9 @@ using namespace std;
 struct Pasien {
     int nomorAntrian;
     string nama;
-    long long nik;
+    string nik;
     int usia;
     string Keluhan;
-    string waktuDaftar;
 };
 
 // fungsi tampilan
@@ -32,17 +31,21 @@ int getMenu() {
 }
 
 // Menambahkan Pasien
-// void tambahPasien(string nama, long long nik, int usia, string keluhan,string waktuDaftar,int prioritas) {
-//     pasien p = {nomorAntrian++,nama, nik, usia, keluhan, waktuDaftar, prioritas};
-//     antrian.push(p);
-//     semuaPasien.pushBack(p);
-//     cout << "Pasien " << nama << " Berhasil ditambahkan ke antrian.\n";
-// }
+void tambahPasien() {
+    Pasien p;
+    cout << "Masukkan nama pasien : ";
+    cin >> p.nama;
+    cout << "Masukkan usia pasien : ";
+    cin >> p.usia;
+    cout << "Masukkan keluhan pasien : ";
+    cin >> p.Keluhan;
+    cout << "Pasien " << p.nama << " Berhasil ditambahkan ke antrian.\n";
+}
 
 // Menampilkan Antrian
-// void tampilkanAntrian() {
+void tampilkanAntrian() {
     
-// }
+}
 
 int main() {
     int pilihan = getMenu();
