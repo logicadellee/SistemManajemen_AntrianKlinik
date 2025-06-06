@@ -1,16 +1,42 @@
 #include<iostream>
 #include<string>
+#include<algorithm>
+#include<limits>
 
 using namespace std;
 
 // tipedata_1
 struct Pasien {
-    int nomorAntrian;
-    string nama;
     string nik;
+    string nama;
     int usia;
     string Keluhan;
 };
+
+// validasi NIK
+bool cekNIK(string nik) {
+    if(nik.length() != 16) {
+        return false;
+    }
+    for(char c : nik) {
+        if(!isdigit(c)) {
+            return false;
+        }
+    }
+}
+
+// tambahPasien
+void tambahPasien() {
+    Pasien pasienBaru;
+
+    do {
+        cout << "Input NIK (16 digit) : ";
+        getline(cin, pasienBaru.nik);
+        if(cekNIK(pasienBaru.nik)) {
+            cout << "Format NIK salah." << endl;
+        }
+    }while (cekNIK(pasien.nik));
+}
 
 // fungsi tampilan
 int getMenu() {
