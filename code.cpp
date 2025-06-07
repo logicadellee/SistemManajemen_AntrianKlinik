@@ -1,4 +1,5 @@
 #include<iostream>
+#include<fstream>
 #include<string>
 #include<iomanip>
 #include<queue>
@@ -56,6 +57,13 @@ int ambilAngka(string teks) {
     }
 }
 
+Pasien* ambilData(int &jumlah) {
+    ifstream file("data_pasien.txt");
+    Pasien*list = nullptr;
+    jumlah = 0;
+    string baris;
+}
+
 // tambahPasien
 void tambahPasien() {
     Pasien pasienBaru;
@@ -104,10 +112,36 @@ void tampilkanSemua(Pasien* data, int jumlah) {
     }
 }
 
+// mencari data pasien berdasarkan nik
+void cariDatapasien() {
+    int jumlah;
+    Pasien*data = ambilData(jumlah);
+    string nik;
+    cout << "Cari NIK : ";
+    getline(cin, nik);
+
+    for(int i=0; i < jumlah; i++) {
+        if(data[i].nik == nik) {
+            cout << "Pasien ditemukan." << endl;
+            cout << "Nama : " << data[i].nama << "\n Umur : " << data[i].usia << "\nKeluhan : " << data[i].keluhan << endl;
+            delete[] data;
+            return;
+        }
+    }
+    cout << "data tidak ditemukan." << endl;
+    delete[] data;
+}
+
+
 // urutkan data pasien berdasarkan nik
 void urutkanPasien() {
     int jumlah;
-    
+    Pasien*data = ambilData(jumlah);
+    sort(data, data + jumlah, [](Pasien a, Pasien b)) {
+        return a.nik < b.nik;
+    }
+    tampilkanSemua(data, jumlah);
+    delete[] data;
 }
 
 // fungsi tampilan
