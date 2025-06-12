@@ -9,7 +9,7 @@
 
 using namespace std;
 
-// login section
+// Login section
 bool login() {
     string username, password;
     const string User = "admin";
@@ -30,7 +30,7 @@ bool login() {
     }
 }
 
-// tipedata_1
+// tipe data_1
 struct Pasien {
     string nik;
     string nama;
@@ -42,14 +42,11 @@ queue<Pasien> daftarAntrian;
 
 // validasi NIK
 bool cekNIK(string nik) {
-    if(nik.length() != 16) {
-        return false;
-    }
+    if(nik.length() != 16) return false;
     for(char c : nik) {
-        if(!isdigit(c)) {
-            return false;
-        }
-    } return true;
+        if(!isdigit(c)) return false;
+    }
+    return true;
 }
 
 // validasi nama
@@ -58,7 +55,8 @@ bool cekHurufspasi(string teks) {
         if(!isalpha(c) && !isspace(c)) {
             return false;
         }
-    } return true;
+    }
+    return true;
 }
 
 // ambil inputan angka
@@ -71,16 +69,17 @@ int ambilAngka(string teks) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Input harus angka, coba lagi.\n";
-        }else {
+        } else {
             cin.ignore();
             return angka;
         }
     }
 }
 
+// ambil data dari file
 Pasien* ambilData(int &jumlah) {
     ifstream file("data_pasien.txt");
-    Pasien*list = nullptr;
+    Pasien* list = nullptr;
     jumlah = 0;
     string baris;
 
@@ -94,7 +93,7 @@ Pasien* ambilData(int &jumlah) {
         p.usia = stoi(baris.substr(b+1,c-b-1));
         p.keluhan = baris.substr(c+1);
 
-        Pasien*temp = new Pasien[jumlah+1];
+        Pasien* temp = new Pasien[jumlah+1];
         for(int i=0; i<jumlah; i++) {
             temp[i] = list[i];
         }
@@ -106,7 +105,8 @@ Pasien* ambilData(int &jumlah) {
     return list;
 }
 
-void simpanData(Pasien*list, int jumlah) {
+// simpan data ke file
+void simpanData(Pasien* list, int jumlah) {
     ofstream file("data_pasien.txt");
     for(int i=0; i<jumlah; i++) {
         file << list[i].nik << "|" << list[i].nama << "|" << list[i].usia << "|" << list[i].keluhan << endl;
@@ -123,7 +123,7 @@ void tambahPasien() {
         if(!cekNIK(pasienBaru.nik)) {
             cout << "Format NIK salah." << endl;
         }
-    }while (!cekNIK(pasienBaru.nik));
+    } while (!cekNIK(pasienBaru.nik));
 
     do {
         cout << "Nama Pasien : ";
@@ -131,7 +131,7 @@ void tambahPasien() {
         if(!cekHurufspasi(pasienBaru.nama)) {
             cout << "Nama tidak valid." << endl;
         }
-    }while (!cekHurufspasi(pasienBaru.nama));
+    } while (!cekHurufspasi(pasienBaru.nama));
 
     pasienBaru.usia = ambilAngka("Umur Pasien : ");
 
@@ -141,73 +141,119 @@ void tambahPasien() {
         if(!cekHurufspasi(pasienBaru.keluhan)) {
             cout << "Keluhan tidak valid." << endl;
         }
-    }while (!cekHurufspasi(pasienBaru.keluhan));
+    } while (!cekHurufspasi(pasienBaru.keluhan));
 
-    ofstream file ("data_pasien.txt", ios::app);
+    ofstream file("data_pasien.txt", ios::app);
     file << pasienBaru.nik << "|" << pasienBaru.nama << "|" << pasienBaru.usia << "|" << pasienBaru.keluhan << endl;
     cout << "Data berhasil disimpan" << endl;
     daftarAntrian.push(pasienBaru);
 }
 
-// tampilkan data pasien
-void tampilkanSemua(Pasien*data, int jumlah) {
+// tampilkan semua data pasien
+void tampilkanSemua(Pasien* data, int jumlah) {
     if(jumlah == 0) {
-        cout << "Belum ada data pasien.";
+        cout << "Belum ada data pasien.\n";
         return;
     }
 
     cout << left << setw(6) << "No" << setw(18) << "NIK" << setw(20) << "Nama" << setw(6) << "Usia" << setw(30) << "Keluhan" << endl;
-    cout << string(80, '-');
-    cout << endl;
+    cout << string(80, '-') << endl;
 
-    for(int i=0; i<jumlah; i++) {
+    for(int i = 0; i < jumlah; i++) {
         cout << left << setw(6) << (i+1) << setw(18) << data[i].nik << setw(20) << data[i].nama << setw(6) << data[i].usia << setw(30) << data[i].keluhan << endl;
     }
 }
 
-// update data
-
-// hapus data
-
-// mencari data pasien berdasarkan nik
-void cariDatapasien() {
-    int jumlah;
-    Pasien*data = ambilData(jumlah);
+// ubah data pasien
+void ubahDataPasien() {
+    int total;
+    Pasien* data = ambilData(total);
     string nik;
-    cout << "Cari NIK : ";
+    cout << "Masukkan NIK yang mau diubah: ";
     getline(cin, nik);
 
-    for(int i=0; i < jumlah; i++) {
-        if(data[i].nik == nik) {
-            cout << "Pasien ditemukan." << endl;
-            cout << "Nama : " << data[i].nama << "\n Umur : " << data[i].usia << "\nKeluhan : " << data[i].keluhan << endl;
+    for (int i = 0; i < total; i++) {
+        if (data[i].nik == nik) {
+            string input; 
+            cout << "Nama baru (" << data[i].nama << "): ";
+            getline(cin, input);
+            if (!input.empty() && cekHurufspasi(input)) data[i].nama = input;
+
+            cout << "Umur baru (" << data[i].usia << "): ";
+            getline(cin, input);
+            if (!input.empty()) {
+                try {
+                    data[i].usia = stoi(input);
+                } catch (...) {
+                    cout << "Input umur tidak valid.\n";
+                }
+            }
+
+            cout << "Keluhan baru (" << data[i].keluhan << "): ";
+            getline(cin, input);
+            if (!input.empty() && cekHurufspasi(input)) data[i].keluhan = input;
+
+            simpanData(data, total);
+            cout << "Data berhasil diperbarui.\n";
             delete[] data;
             return;
         }
     }
-    cout << "data tidak ditemukan." << endl;
+
+    cout << "Data pasien tidak ditemukan.\n";
     delete[] data;
 }
 
+// hapus data pasien
+void hapusDataPasien() {
+    int jumlah;
+    Pasien* data = ambilData(jumlah);
+    string nik;
+    cout << "NIK yang ingin dihapus: ";
+    getline(cin, nik);
 
-// urutkan data pasien berdasarkan nik
+    bool ada = false;
+    Pasien* baru = new Pasien[jumlah];
+    int idx = 0;
+    for (int i = 0; i < jumlah; i++) {
+        if (data[i].nik != nik) {
+            baru[idx++] = data[i];
+        } else {
+            ada = true;
+        }
+    }
+
+    if (ada) {
+        simpanData(baru, idx);
+        cout << "Data berhasil dihapus.\n";
+    } else {
+        cout << "NIK tidak ditemukan.\n";
+    }
+
+    delete[] data;
+    delete[] baru;
+}
+
+// mencari data pasien berdasarkan NIK
+
+// urutkan data pasien berdasarkan NIK
 void urutkanPasien() {
     int jumlah;
-    Pasien*data = ambilData(jumlah);
-    sort (data, data + jumlah, [](Pasien a, Pasien b) {
+    Pasien* data = ambilData(jumlah);
+    sort(data, data + jumlah, [](Pasien a, Pasien b) {
         return a.nik < b.nik;
-    }
-    tampilkanSemua(data, jumlah) 
+    });
+    tampilkanSemua(data, jumlah);
     delete[] data;
 }
 
-// panggil antrian
+// panggil antrian pasien
 
-// fungsi tampilan
+// tampilan menu
 int getMenu() {
     int input;
     cout << "\nProgram CRUD Data Antrian Pasien Klinik Sehat" << endl;
-    cout << "================================================" <<endl;
+    cout << "================================================" << endl;
     cout << "1. Tambah Data Pasien" << endl;
     cout << "2. Tampilkan Data Pasien" << endl;
     cout << "3. Ubah Data Pasien" << endl;
@@ -216,54 +262,54 @@ int getMenu() {
     cout << "6. Urutkan Pasien" << endl;
     cout << "7. Panggil Antrian" << endl;
     cout << "8. Keluar" << endl;
-    cout << "================================================" <<endl;
+    cout << "================================================" << endl;
     cout << "Pilih [1-8] : ";
     cin >> input;
+    cin.ignore(); // agar getline setelah cin tidak bermasalah
     return input;
-
 }
 
-
+// main program
 int main() {
-    if(!login()) {
-        return 0;
-    }
-    int menu;
-    do {
-        int pilihan = getMenu();
+    if(!login()) return 0;
 
+    int pilihan;
+    do {
+        pilihan = getMenu();
         switch(pilihan){
-            case 1 : 
+            case 1:
                 tambahPasien();
                 break;
-            case 2 :
+            case 2: {
                 int jumlah;
                 Pasien* data = ambilData(jumlah);
                 tampilkanSemua(data, jumlah);
                 delete[] data;
                 break;
-            // case 3 :
-            //     ubahDataPasien();
-            //     break;
-            // case 4 :
-            //     hapusDataPasien();
-            //     break;
-            case 5 :
+            }
+            case 3:
+                ubahDataPasien();
+                break;
+            case 4:
+                hapusDataPasien();
+                break;
+            case 5:
                 cariDatapasien();
                 break;
-            case 6 :
+            case 6:
                 urutkanPasien();
                 break;
-            // case 7 :
-            //     panggilPasien();
-            //     break;
-            case 8 :
+            case 7:
+                panggilPasien();
+                break;
+            case 8:
                 cout << "Selesai. Terima Kasih!" << endl;
                 break;
-            default :
+            default:
                 cout << "Pilihan tidak ditemukan" << endl;
                 break;
         }
-    }while ( menu != 8);
+    } while (pilihan != 8);
+
     return 0;
 }
