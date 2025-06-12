@@ -9,6 +9,27 @@
 
 using namespace std;
 
+// login section
+bool login() {
+    string username, password;
+    const string User = "admin";
+    const string Pass = "12345";
+
+    cout << "=======SISTEM LOGIN=======" << endl;
+    cout << "Username : ";
+    getline(cin, username);
+    cout << "Password : ";
+    getline(cin, password);
+
+    if(username == User && password == Pass) {
+        cout << "Login berhasil" << endl;
+        return true;
+    } else {
+        cout << "Login gagal. Username atau Password salah" << endl;
+        return false;
+    }
+}
+
 // tipedata_1
 struct Pasien {
     string nik;
@@ -62,6 +83,34 @@ Pasien* ambilData(int &jumlah) {
     Pasien*list = nullptr;
     jumlah = 0;
     string baris;
+
+    while (getline(file, baris)) {
+        Pasien p;
+        size_t a = baris.find("|");
+        size_t b = baris.find("|", a+1);
+        size_t c = baris.find("|", b+1);
+        p.nik = baris.substr(0,a);
+        p.nama = baris.substr(a+1, b-a-1);
+        p.usia = stoi(baris.substr(b+1,c-b-1));
+        p.keluhan = baris.substr(c+1);
+
+        Pasien*temp = new Pasien[jumlah+1];
+        for(int i=0; i<jumlah; i++) {
+            temp[i] = list[i];
+        }
+        temp[jumlah] = p;
+        delete[] list;
+        list = temp;
+        jumlah++;
+    }
+    return list;
+}
+
+void simpanData(Pasien*list, int jumlah) {
+    ofstream file("data_pasien.txt");
+    for(int i=0; i<jumlah; i++) {
+        file << list[i].nik << "|" << list[i].nama << "|" << list[i].usia << "|" << list[i].keluhan << endl;
+    }
 }
 
 // tambahPasien
@@ -76,8 +125,6 @@ void tambahPasien() {
         }
     }while (!cekNIK(pasienBaru.nik));
 
-    pasienBaru.usia = ambilAngka("Umur Pasien : ");
-
     do {
         cout << "Nama Pasien : ";
         getline(cin, pasienBaru.nama);
@@ -85,6 +132,8 @@ void tambahPasien() {
             cout << "Nama tidak valid." << endl;
         }
     }while (!cekHurufspasi(pasienBaru.nama));
+
+    pasienBaru.usia = ambilAngka("Umur Pasien : ");
 
     do {
         cout << "Keluhan : ";
@@ -94,10 +143,14 @@ void tambahPasien() {
         }
     }while (!cekHurufspasi(pasienBaru.keluhan));
 
+    ofstream file ("data_pasien.txt", ios::app);
+    file << pasienBaru.nik << "|" << pasienBaru.nama << "|" << pasienBaru.usia << "|" << pasienBaru.keluhan << endl;
+    cout << "Data berhasil disimpan" << endl;
+    daftarAntrian.push(pasienBaru);
 }
 
 // tampilkan data pasien
-void tampilkanSemua(Pasien* data, int jumlah) {
+void tampilkanSemua(Pasien*data, int jumlah) {
     if(jumlah == 0) {
         cout << "Belum ada data pasien.";
         return;
@@ -108,9 +161,13 @@ void tampilkanSemua(Pasien* data, int jumlah) {
     cout << endl;
 
     for(int i=0; i<jumlah; i++) {
-        cout << left << setw(6) << (i+1) << setw(18) << data[i].nik << setw(20) << data[i].nama << setw(6) << data[i].usia1 << setw(30) << data[i].keluhan << endl;
+        cout << left << setw(6) << (i+1) << setw(18) << data[i].nik << setw(20) << data[i].nama << setw(6) << data[i].usia << setw(30) << data[i].keluhan << endl;
     }
 }
+
+// update data
+
+// hapus data
 
 // mencari data pasien berdasarkan nik
 void cariDatapasien() {
@@ -137,26 +194,30 @@ void cariDatapasien() {
 void urutkanPasien() {
     int jumlah;
     Pasien*data = ambilData(jumlah);
-    sort(data, data + jumlah, [](Pasien a, Pasien b)) {
+    sort (data, data + jumlah, [](Pasien a, Pasien b) {
         return a.nik < b.nik;
     }
-    tampilkanSemua(data, jumlah);
+    tampilkanSemua(data, jumlah) 
     delete[] data;
 }
+
+// panggil antrian
 
 // fungsi tampilan
 int getMenu() {
     int input;
-    system("cls");
     cout << "\nProgram CRUD Data Antrian Pasien Klinik Sehat" << endl;
     cout << "================================================" <<endl;
     cout << "1. Tambah Data Pasien" << endl;
     cout << "2. Tampilkan Data Pasien" << endl;
     cout << "3. Ubah Data Pasien" << endl;
     cout << "4. Hapus Data Pasien" << endl;
-    cout << "5. Selesai" << endl;
+    cout << "5. Cari Data Pasien" << endl;
+    cout << "6. Urutkan Pasien" << endl;
+    cout << "7. Panggil Antrian" << endl;
+    cout << "8. Keluar" << endl;
     cout << "================================================" <<endl;
-    cout << "Pilih [1-5] : ";
+    cout << "Pilih [1-8] : ";
     cin >> input;
     return input;
 
@@ -164,43 +225,45 @@ int getMenu() {
 
 
 int main() {
-    int pilihan = getMenu();
-    char is_continue;
+    if(!login()) {
+        return 0;
+    }
+    int menu;
+    do {
+        int pilihan = getMenu();
 
-    enum menu{CREATE=1,READ, UPDATE, DELETE, FINISH};
-
-    while(pilihan != FINISH) {
         switch(pilihan){
-            case CREATE : 
-                cout << "Menambah data pasien" << endl;
+            case 1 : 
+                tambahPasien();
                 break;
-            case READ :
-                cout << "Tampilkan data pasien" << endl;
+            case 2 :
+                int jumlah;
+                Pasien* data = ambilData(jumlah);
+                tampilkanSemua(data, jumlah);
+                delete[] data;
                 break;
-            case UPDATE :
-                cout << "Ubah data pasien" << endl;
+            // case 3 :
+            //     ubahDataPasien();
+            //     break;
+            // case 4 :
+            //     hapusDataPasien();
+            //     break;
+            case 5 :
+                cariDatapasien();
                 break;
-            case DELETE :
-                cout << "Hapus data pasien" << endl;
+            case 6 :
+                urutkanPasien();
+                break;
+            // case 7 :
+            //     panggilPasien();
+            //     break;
+            case 8 :
+                cout << "Selesai. Terima Kasih!" << endl;
                 break;
             default :
                 cout << "Pilihan tidak ditemukan" << endl;
                 break;
         }
-
-        label_continue :
-
-        cout << "Lanjutkan? (y/n) : ";
-        cin >> is_continue;
-        if((is_continue == 'y') | (is_continue == 'Y')) {
-            pilihan = getMenu();
-        } else if((is_continue == 'n') | (is_continue == 'N')) {
-            break;
-        } else {
-            goto label_continue;
-        }
-    }
-    cout << "akhir dari program" << endl;
-    cin.get();
+    }while ( menu != 8);
     return 0;
 }
