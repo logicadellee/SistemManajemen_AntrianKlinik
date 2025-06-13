@@ -205,6 +205,34 @@ void ubahDataPasien() {
 }
 
 // hapus data pasien
+void hapusDataPasien() {
+    int jumlah;
+    Pasien* data = ambilData(jumlah);
+    string nik;
+    cout << "NIK yang ingin dihapus: ";
+    getline(cin, nik);
+
+    bool ada = false;
+    Pasien* baru = new Pasien[jumlah];
+    int idx = 0;
+    for (int i = 0; i < jumlah; i++) {
+        if (data[i].nik != nik) {
+            baru[idx++] = data[i];
+        } else {
+            ada = true;
+        }
+    }
+
+    if (ada) {
+        simpanData(baru, idx);
+        cout << "Data berhasil dihapus.\n";
+    } else {
+        cout << "NIK tidak ditemukan.\n";
+    }
+
+    delete[] data;
+    delete[] baru;
+}
 
 // mencari data pasien berdasarkan NIK
 
