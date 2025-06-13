@@ -6,6 +6,7 @@
 #include<algorithm>
 #include<limits>
 #include<cctype>
+#include<queue>
 
 using namespace std;
 
@@ -193,11 +194,14 @@ void cariDatapasien() {
 // urutkan data pasien berdasarkan nik
 void urutkanPasien() {
     int jumlah;
-    Pasien*data = ambilData(jumlah);
-    sort (data, data + jumlah, [](Pasien a, Pasien b) {
+    Pasien* data = ambilData(jumlah);
+    
+    std::sort(data, data + jumlah, [](Pasien a, Pasien b) {
         return a.nik < b.nik;
-    }
-    tampilkanSemua(data, jumlah) 
+    });
+
+    tampilkanSemua(data, jumlah);
+
     delete[] data;
 }
 
