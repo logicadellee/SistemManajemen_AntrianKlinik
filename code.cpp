@@ -9,7 +9,7 @@
 
 using namespace std;
 
-// Login section
+// -------------------- LOGIN SECTION --------------------
 bool login() {
     string username, password;
     const string User = "admin";
@@ -113,7 +113,7 @@ void simpanData(Pasien* list, int jumlah) {
     }
 }
 
-// tambahPasien
+// tambah data pasien
 void tambahPasien() {
     Pasien pasienBaru;
 
@@ -285,7 +285,7 @@ void panggilPasien() {
 // tampilan menu
 int getMenu() {
     int input;
-    cout << "\nProgram CRUD Data Antrian Pasien Klinik Sehat" << endl;
+    cout << "\n===== MENU ANTRIAN PASIEN =====\n"<< endl;
     cout << "================================================" << endl;
     cout << "1. Tambah Data Pasien" << endl;
     cout << "2. Tampilkan Data Pasien" << endl;
@@ -298,7 +298,7 @@ int getMenu() {
     cout << "================================================" << endl;
     cout << "Pilih [1-8] : ";
     cin >> input;
-    cin.ignore(); // agar getline setelah cin tidak bermasalah
+    cin.ignore();
     return input;
 }
 
