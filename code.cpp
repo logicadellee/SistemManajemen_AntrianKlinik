@@ -235,6 +235,25 @@ void hapusDataPasien() {
 }
 
 // mencari data pasien berdasarkan NIK
+void cariDataPasien() {
+    int jumlah;
+    Pasien* data = ambilData(jumlah);
+    string nik;
+    cout << "Cari NIK: ";
+    getline(cin, nik);
+
+    for (int i = 0; i < jumlah; i++) {
+        if (data[i].nik == nik) {
+            cout << "Pasien ditemukan:\n";
+            cout << "Nama: " << data[i].nama << "\nUmur: " << data[i].usia << "\nKeluhan: " << data[i].keluhan << "\n";
+            delete[] data;
+            return;
+        }
+    }
+
+    cout << "Data tidak ditemukan.\n";
+    delete[] data;
+}
 
 // urutkan data pasien berdasarkan NIK
 void urutkanPasien() {
@@ -248,6 +267,20 @@ void urutkanPasien() {
 }
 
 // panggil antrian pasien
+void panggilPasien() {
+    if (daftarAntrian.empty()) {
+        cout << "Antrian kosong.\n";
+        return;
+    }
+
+    Pasien next = daftarAntrian.front();
+    daftarAntrian.pop();
+
+    cout << "Memanggil: " << next.nama << " - Keluhan: " << next.keluhan << "\n";
+
+    ofstream file("riwayat_dilayani.txt", ios::app);
+    file << next.nik << "|" << next.nama << "|" << next.usia << "|" << next.keluhan << "|SUDAH DILAYANI\n";
+}
 
 // tampilan menu
 int getMenu() {
@@ -294,7 +327,7 @@ int main() {
                 hapusDataPasien();
                 break;
             case 5:
-                cariDatapasien();
+                cariDataPasien();
                 break;
             case 6:
                 urutkanPasien();
