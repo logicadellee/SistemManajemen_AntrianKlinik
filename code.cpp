@@ -11,7 +11,7 @@ using namespace std;
 
 // -------------------- LOGIN SECTION --------------------
 bool login() {
-    string username, password;                             //menyimpan inputan pengguna
+    string username, password;                                                          //menyimpan inputan pengguna
     const string User = "admin";
     const string Pass = "12345";
 
@@ -21,7 +21,7 @@ bool login() {
     cout << "Password : ";
     getline(cin, password);
 
-    if(username == User && password == Pass) {             //pengecekan login
+    if(username == User && password == Pass) {                                          //pengecekan login
         cout << "Login berhasil" << endl;
         return true;
     } else {
@@ -42,9 +42,9 @@ queue<Pasien> daftarAntrian; //antrian, prinsip FIFO
 
 // validasi NIK
 bool cekNIK(string nik) {
-    if(nik.length() != 16) return false;                   //cek panjang string
+    if(nik.length() != 16) return false;                                                //cek panjang string
     for(char c : nik) {
-        if(!isdigit(c)) return false;                     //cek karakter harus angka
+        if(!isdigit(c)) return false;                                                   //cek karakter harus angka
     }
     return true;
 }
@@ -52,7 +52,7 @@ bool cekNIK(string nik) {
 // validasi nama
 bool cekHurufspasi(string teks) {
     for(char c : teks) {
-        if(!isalpha(c) && !isspace(c)) {                 //cek huruf dan spasi
+        if(!isalpha(c) && !isspace(c)) {                                                //cek huruf dan spasi
             return false;
         }
     }
@@ -62,28 +62,28 @@ bool cekHurufspasi(string teks) {
 // ambil inputan angka
 int ambilAngka(string teks) {
     int angka;
-    while(true) {                                       //ulangi sampai inputan user benar
+    while(true) {                                                                       //ulangi sampai inputan user benar
         cout << teks;
         cin >> angka;
-        if(cin.fail()) {                                //cek apakah input gagal dibaca sebagai angka
-            cin.clear();                                //kalau input gagal,fungsi ini akan menghapus status eror dari cin
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');   //membersihkan sisa input yang salah dari buffer
+        if(cin.fail()) {                                                                //cek apakah input gagal dibaca sebagai angka
+            cin.clear();                                                                //kalau input gagal,fungsi ini akan menghapus status eror dari cin
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');                        //membersihkan sisa input yang salah dari buffer
             cout << "Input harus angka, coba lagi.\n";
         } else {
             cin.ignore();
-            return angka;                               //keluarkan nilai ke program utama
+            return angka;                                                                //keluarkan nilai ke program utama
         }
     }
 }
 
 // ambil data dari file
-Pasien* ambilData(int &jumlah) {                       //ambil data dari file untuk masuk ke array
-    ifstream file("data_pasien.txt");                  //buka file untuk dibaca
+Pasien* ambilData(int &jumlah) {                                                        //ambil data dari file untuk masuk ke array
+    ifstream file("data_pasien.txt");                                                   //buka file untuk dibaca
     Pasien* list = nullptr;
     jumlah = 0;
     string baris;
 
-    while (getline(file, baris)) {                    //ambil tiap baris dari file
+    while (getline(file, baris)) {                                                      //ambil tiap baris dari file
         Pasien p;
         size_t a = baris.find("|");
         size_t b = baris.find("|", a+1);
@@ -93,33 +93,33 @@ Pasien* ambilData(int &jumlah) {                       //ambil data dari file un
         p.usia = stoi(baris.substr(b+1,c-b-1));
         p.keluhan = baris.substr(c+1);
 
-        Pasien* temp = new Pasien[jumlah+1];          //tambahkan ke array
+        Pasien* temp = new Pasien[jumlah+1];                                            //tambahkan ke array
         for(int i=0; i<jumlah; i++) {
             temp[i] = list[i];
         }
         temp[jumlah] = p;
         delete[] list;
         list = temp;
-        jumlah++;                                     //update list
+        jumlah++;                                                                       //update list
     }
     return list;
 }
 
 // simpan data ke file
-void simpanData(Pasien* list, int jumlah) {          //simpan array ke dalam file pagi
-    ofstream file("data_pasien.txt");                //buka file untuk ditulis ulang
-    for(int i=0; i<jumlah; i++) {                    //ulangi semua data dalam array, lalu tulis ke file dengan format nik|nama|usia|keluhan
+void simpanData(Pasien* list, int jumlah) {                                             //simpan array ke dalam file pagi
+    ofstream file("data_pasien.txt");                                                   //buka file untuk ditulis ulang
+    for(int i=0; i<jumlah; i++) {                                                       //ulangi semua data dalam array, lalu tulis ke file dengan format nik|nama|usia|keluhan
         file << list[i].nik << "|" << list[i].nama << "|" << list[i].usia << "|" << list[i].keluhan << endl;
     }
 }
 
 // tambah data pasien
 void tambahPasien() {
-    Pasien pasienBaru;                              //variabel pasienBaru untuk menampung data input
+    Pasien pasienBaru;                                                                  //variabel pasienBaru untuk menampung data input
 
     do {
         cout << "Input NIK (16 digit) : ";
-        getline(cin, pasienBaru.nik);              //cek nik
+        getline(cin, pasienBaru.nik);                                                   //cek nik
         if(!cekNIK(pasienBaru.nik)) {              
             cout << "Format NIK salah." << endl;
         }
@@ -128,36 +128,36 @@ void tambahPasien() {
     do {
         cout << "Nama Pasien : ";
         getline(cin, pasienBaru.nama);
-        if(!cekHurufspasi(pasienBaru.nama)) {     //cek huruf dan spasi
+        if(!cekHurufspasi(pasienBaru.nama)) {                                           //cek huruf dan spasi
             cout << "Nama tidak valid." << endl;
         }
     } while (!cekHurufspasi(pasienBaru.nama));
 
-    pasienBaru.usia = ambilAngka("Umur Pasien : ");   //validasi input adalah angka
+    pasienBaru.usia = ambilAngka("Umur Pasien : ");                                     //validasi input adalah angka
 
     do {
         cout << "Keluhan : ";
         getline(cin, pasienBaru.keluhan);
-        if(!cekHurufspasi(pasienBaru.keluhan)) {      //cek agar input hanya huruf dan spasi
+        if(!cekHurufspasi(pasienBaru.keluhan)) {                                        //cek agar input hanya huruf dan spasi
             cout << "Keluhan tidak valid." << endl;
         }
     } while (!cekHurufspasi(pasienBaru.keluhan));
 
-    ofstream file("data_pasien.txt", ios::app);      //simpan data ke file
+    ofstream file("data_pasien.txt", ios::app);                                          //simpan data ke file
     file << pasienBaru.nik << "|" << pasienBaru.nama << "|" << pasienBaru.usia << "|" << pasienBaru.keluhan << endl;
     cout << "Data berhasil disimpan" << endl;
-    daftarAntrian.push(pasienBaru);                 //menambahkan pasien baru ke antrian (struktur data queue)
+    daftarAntrian.push(pasienBaru);                                                      //menambahkan pasien baru ke antrian (struktur data queue)
 }
 
 // tampilkan semua data pasien
-void tampilkanSemua(Pasien* data, int jumlah) {    //pointer ke array dari struct pasien, jumlah adalah total data dalam array
-    if(jumlah == 0) {                              //jika tidak ada data
+void tampilkanSemua(Pasien* data, int jumlah) {                                          //pointer ke array dari struct pasien, jumlah adalah total data dalam array
+    if(jumlah == 0) {                                                                    //jika tidak ada data
         cout << "Belum ada data pasien.\n";
         return;
     }
 
     cout << left << setw(6) << "No" << setw(18) << "NIK" << setw(20) << "Nama" << setw(6) << "Usia" << setw(30) << "Keluhan" << endl;   //setw(n) membuat lebar kolom, left untuk menyusun teks rata kiri
-    cout << string(80, '-') << endl;         //menampilkan garis pemisah dengan panjang 80 karakter          
+    cout << string(80, '-') << endl;                                                    //menampilkan garis pemisah dengan panjang 80 karakter          
 
     for(int i = 0; i < jumlah; i++) {
         cout << left << setw(6) << (i+1) << setw(18) << data[i].nik << setw(20) << data[i].nama << setw(6) << data[i].usia << setw(30) << data[i].keluhan << endl;
@@ -167,24 +167,24 @@ void tampilkanSemua(Pasien* data, int jumlah) {    //pointer ke array dari struc
 // ubah data pasien
 void ubahDataPasien() {
     int total;
-    Pasien* data = ambilData(total);              //ambil data dari file dan menyimpannya dalam array data
+    Pasien* data = ambilData(total);                                                     //ambil data dari file dan menyimpannya dalam array data
     string nik;
     cout << "Masukkan NIK yang mau diubah: ";
     getline(cin, nik);
 
-    for (int i = 0; i < total; i++) {            //pencarian data dalam array
+    for (int i = 0; i < total; i++) {                                                    //pencarian data dalam array
         if (data[i].nik == nik) {
             string input; 
             cout << "Nama baru (" << data[i].nama << "): ";
             getline(cin, input);
-            if (!input.empty() && cekHurufspasi(input)) data[i].nama = input;      //cek jika input tidak kosong dan valid (huruf dan spasi), update nama
+            if (!input.empty() && cekHurufspasi(input)) data[i].nama = input;           //cek jika input tidak kosong dan valid (huruf dan spasi), update nama
 
             cout << "Umur baru (" << data[i].usia << "): ";
             getline(cin, input);
-            if (!input.empty()) {                         //jika tidak kosong,coba konversi ke int(stoi)
+            if (!input.empty()) {                                                       //jika tidak kosong,coba konversi ke int(stoi)
                 try {
                     data[i].usia = stoi(input);           
-                } catch (...) {                          //kalau bukan angka, tampilkan pesan eror
+                } catch (...) {                                                        //kalau bukan angka, tampilkan pesan eror
                     cout << "Input umur tidak valid.\n";
                 }
             }
@@ -193,9 +193,9 @@ void ubahDataPasien() {
             getline(cin, input);
             if (!input.empty() && cekHurufspasi(input)) data[i].keluhan = input;
 
-            simpanData(data, total);                   //simpan seluruh data kembali ke file
+            simpanData(data, total);                                                     //simpan seluruh data kembali ke file
             cout << "Data berhasil diperbarui.\n";
-            delete[] data;                            //hapus array dari memory            
+            delete[] data;                                                               //hapus array dari memory            
             return;
         }
     }
@@ -207,19 +207,19 @@ void ubahDataPasien() {
 // hapus data pasien
 void hapusDataPasien() {
     int jumlah;
-    Pasien* data = ambilData(jumlah);                //ambil data dari file ke dalam array data
+    Pasien* data = ambilData(jumlah);                                                    //ambil data dari file ke dalam array data
     string nik;
     cout << "NIK yang ingin dihapus: ";
     getline(cin, nik);
 
-    bool ada = false;                               //cek apakah nik ditemukan
-    Pasien* baru = new Pasien[jumlah];              //array baru untuk menyimpan data yang tidak dihapus
-    int idx = 0;                                    //indeks array baru
+    bool ada = false;                                                                    //cek apakah nik ditemukan
+    Pasien* baru = new Pasien[jumlah];                                                   //array baru untuk menyimpan data yang tidak dihapus
+    int idx = 0;                                                                         //indeks array baru
     for (int i = 0; i < jumlah; i++) {                 
-        if (data[i].nik != nik) {                   //nik tidak sama, simpan ke array baru
+        if (data[i].nik != nik) {                                                        //nik tidak sama, simpan ke array baru
             baru[idx++] = data[i];
         } else {
-            ada = true;                             //nik sama, data pasien dihapus
+            ada = true;                                                                  //nik sama, data pasien dihapus
         }
     }
 
@@ -242,8 +242,8 @@ void cariDataPasien() {
     cout << "Cari NIK: ";
     getline(cin, nik);
 
-    for (int i = 0; i < jumlah; i++) {                       //loop pencarian
-        if (data[i].nik == nik) {                            //jika data ditemukan
+    for (int i = 0; i < jumlah; i++) {                                                     //loop pencarian
+        if (data[i].nik == nik) {                                                          //jika data ditemukan
             cout << "Pasien ditemukan:\n";          
             cout << "Nama: " << data[i].nama << "\nUmur: " << data[i].usia << "\nKeluhan: " << data[i].keluhan << "\n";
             delete[] data;
@@ -251,39 +251,39 @@ void cariDataPasien() {
         }
     }
 
-    cout << "Data tidak ditemukan.\n";                      //jika data tidak ditemukan
+    cout << "Data tidak ditemukan.\n";                                                    //jika data tidak ditemukan
     delete[] data;
 }
 
 // urutkan data pasien berdasarkan NIK
-void urutkanPasien() {                                       //mengurutkan data pasien berdasarkan nik secara ascending (kecil ke besar)
+void urutkanPasien() {                                                                    //mengurutkan data pasien berdasarkan nik secara ascending (kecil ke besar)
     int jumlah;
     Pasien* data = ambilData(jumlah);
-    sort(data, data + jumlah, [](Pasien a, Pasien b) {      //mengurutkan array, [](pasien a, pasien b) fungsi kecil tanpa nama, yang membandingkan nik a dan nik b
+    sort(data, data + jumlah, [](Pasien a, Pasien b) {                                    //mengurutkan array, [](pasien a, pasien b) fungsi kecil tanpa nama, yang membandingkan nik a dan nik b
         return a.nik < b.nik;
     });
-    tampilkanSemua(data, jumlah);                           //tampilkan semua data pasien
+    tampilkanSemua(data, jumlah);                                                         //tampilkan semua data pasien
     delete[] data;
 }
 
 // panggil antrian pasien
 void panggilPasien() {
-    if (daftarAntrian.empty()) {                            //cek apakah ada antrian pasien
+    if (daftarAntrian.empty()) {                                                          //cek apakah ada antrian pasien
         cout << "Antrian kosong.\n";
         return;
     }
 
-    Pasien next = daftarAntrian.front();                   //mengambil pasien terdepan dalam antrian, tapi tidak menghapusnya dulu
-    daftarAntrian.pop();                                   //hapus dari antrian, karena sudah dipanggil
+    Pasien next = daftarAntrian.front();                                                 //mengambil pasien terdepan dalam antrian, tapi tidak menghapusnya dulu
+    daftarAntrian.pop();                                                                 //hapus dari antrian, karena sudah dipanggil
 
     cout << "Memanggil: " << next.nama << " - Keluhan: " << next.keluhan << "\n";  
 
-    ofstream file("riwayat_dilayani.txt", ios::app);      //buka file riwayat dan menambahkan data baru
+    ofstream file("riwayat_dilayani.txt", ios::app);                                     //buka file riwayat dan menambahkan data baru
     file << next.nik << "|" << next.nama << "|" << next.usia << "|" << next.keluhan << "|SUDAH DILAYANI\n";
 }
 
 // tampilan menu
-int getMenu() {                                          //menampilkan daftar menu
+int getMenu() {                                                                          //menampilkan daftar menu
     int input;
     cout << "\n===== MENU ANTRIAN PASIEN =====\n"<< endl;
     cout << "================================================" << endl;
@@ -304,7 +304,7 @@ int getMenu() {                                          //menampilkan daftar me
 
 // main program
 int main() {
-    if(!login()) return 0;                                 //cek login
+    if(!login()) return 0;                                                                //cek login
 
     int pilihan;
     do {                                                   
